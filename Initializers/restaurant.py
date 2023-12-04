@@ -1,22 +1,28 @@
-#Restaurant __init__()`
-#Restaurants should be initialized with a name, as a string
-#Restaurant name()`
-#returns the restaurant's name
-# should not be able to change after the restaurant is created
-
-from typing import Any
-
-
 class Restaurant:
+    all_restaurants = []  # Class variable to keep track of all restaurants
+
     def __init__(self, name):
-        self._name = name
-    
-    def __setattr__(self, name: str, value: Any) -> None:
-        if name == "_name" and hasattr(self, "_name"):
-            print("Attribute '_name' cannot be changed after the restaurant is created.")
-        else:
-            super().__setattr__(name, value)
+        self.name = name
+        self.reviews = []  # List to store restaurant reviews
+        Restaurant.all_restaurants.append(self)  # Add the restaurant to the list of all restaurants
 
     def name(self):
-        return self._name
+        return self.name
 
+    def reviews(self):
+        return self.reviews
+
+    def customers(self):
+        return list({review.customer for review in self.reviews})
+
+    @classmethod
+    def all(cls):
+        return cls.all_restaurants
+
+    def average_star_rating(self):
+        total_ratings = sum(review.rating for review in self.reviews)
+        num_reviews = len(self.reviews)
+        if num_reviews > 0:
+            return total_ratings / num_reviews
+        else:
+            return 0  # Return 0 if there are no reviews yet

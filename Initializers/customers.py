@@ -1,39 +1,44 @@
-# Customer
-# - `Customer __init__()`
-#   - Customer should be initialized with a given name and family name, both strings (i.e., first and last name, like George Washington)"
-# - `Customer given_name()`
-#   - returns the customer's given name
-#   - should be able to change after the customer is created
-# - `Customer family_name()`
-#   - returns the customer's family name
-#   - should be able to change after the customer is created
-# - `Customer full_name()`
-#   - returns the full name of the customer, with the given name and the family name concatenated, Western style.
-# - `Customer all()`
-#   - returns **all** of the customer instances
+
+from reviews import Review
 class Customer:
-    all_customers = []
-    count = 0
+    all_customers = []  # Class variable to keep track of all customers
 
     def __init__(self, given_name, family_name):
-        self._given_name = given_name
-        self._family_name = family_name
-        Customer.all_customers.append(self)
-        Customer.count += 1
+        self.given_name = given_name
+        self.family_name = family_name
+        self.reviews = []  # List to store customer reviews
+        Customer.all_customers.append(self)  # Add the customer to the list of all customers
 
     def given_name(self):
-        return self._given_name
+        return self.given_name
 
     def family_name(self):
-        return self._family_name
+        return self.family_name
 
     def full_name(self):
-        return f"{self._given_name} {self._family_name}"
+        return f"{self.given_name} {self.family_name}"
+
+    def restaurants(self):
+        return list({review.restaurant for review in self.reviews})
+
+    def add_review(self, restaurant, rating):
+        new_review = Review(self, restaurant, rating)
+        self.reviews.append(new_review)
 
     @classmethod
     def all(cls):
         return cls.all_customers
-    
-    def __repr__(self):
-        return f"<Customer: {self.full_name()}>"
-    
+
+    def num_reviews(self):
+        return len(self.reviews)
+
+    @classmethod
+    def find_by_name(cls, name):
+        for customer in cls.all_customers:
+            if customer.full_name().lower() == name.lower():
+                return customer
+        return None
+
+    @classmethod
+    def find_all_by_given_name(cls, name):
+        return [customer for customer in cls.all_customers if customer.given_name.lower() == name.lower()]
